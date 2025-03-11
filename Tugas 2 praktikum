@@ -1,0 +1,90 @@
+import random
+
+class Robot:
+    def __init__(self, name, HP, attack, defense):
+        self.name = name
+        self.HP = HP
+        self.attack = attack
+        self.defense = defense
+        self.plus_defense = 0
+        self.plus_attack = 0
+
+    def attack_enemy(self, enemy):
+        damage = max(0, self.attack - enemy.defense)  
+        enemy.HP -= damage
+        print(f"{self.name} menyerang {enemy.name} memberikan damage {damage}")
+
+    def defend(self):
+        self.plus_defense += 2
+        print(f"{self.name} bertahan defense bertambah 2")
+
+    def regen(self):
+        self.HP += 10
+        print(f"{self.name} melakukan regenerasi HP 10. HP sekarang {self.HP}")
+
+    def status(self):
+        print(f"{self.name} HP: {self.HP} attack: {self.attack} defense: {self.defense}")
+
+    def is_alive(self):
+        return self.HP > 0
+
+class Game:
+    def __init__(self, robot1, robot2, max_rounds):
+        self.robot1 = robot1
+        self.robot2 = robot2
+        self.max_rounds = max_rounds
+
+    def start(self):
+        print("pertarungan dimulai!!")
+        current_round = 1
+
+        while current_round <= self.max_rounds and self.robot1.is_alive() and self.robot2.is_alive():
+            print(f"=== round {current_round} ===")
+
+            print(f"giliran {self.robot1.name}")
+            self.player_turn(self.robot1, self.robot2)
+
+            if not self.robot2.is_alive():
+                print(f"{self.robot2.name} kalah! {self.robot1.name} menang!\n")
+                break
+
+            print(f"giliran {self.robot2.name}")
+            self.player_turn(self.robot2, self.robot1)
+
+            if not self.robot1.is_alive():
+                print(f"{self.robot1.name} kalah! {self.robot2.name} menang!\n")
+                break
+
+            current_round += 1
+
+        if self.robot1.is_alive() and self.robot2.is_alive():
+            print("Pertarungan berakhir seri!")
+
+    def player_turn(self, attacker, defender):
+        print(f"=== pilih aksi {attacker.name} ===")
+        print("1.attack")
+        print("2.defense")
+        print("3.regen")
+        action = input("pilih aksi (1,2,3): ")
+
+        if action == "1":
+            attacker.attack_enemy(defender)
+        elif action == "2":
+            attacker.defend()
+        elif action == "3":
+            attacker.regen()
+        else:
+            print("pilihan tidak valid, giliran terlewat.\n")
+
+
+        
+        self.robot1.status()
+        self.robot2.status()
+        print("\n" + "=" * 30 + "\n")
+
+robot1 = Robot(name="robot gundam", HP=100, attack=10, defense=5)
+robot2 = Robot(name="r1obot daigunder", HP=100, attack=10, defense=5)
+
+game_instance = Game(robot1, robot2, max_rounds=100)
+
+game_instance.start()
