@@ -1,0 +1,57 @@
+def main():
+    tugas = []
+    #Loop utama
+    while True:
+        #menampilkan menu pilihan
+        print("\nPilih aksi:")
+        print("1. Tambah tugas")
+        print("2. Hapus tugas")
+        print("3. Tampilkan daftar tugas")
+        print("4. Keluar")
+        
+        try:  #untuk input pillihan
+            pilihan = input("Masukkan pilihan (1/2/3/4): ")
+            if pilihan not in ('1', '2', '3', '4'):
+                raise ValueError("Pilihan tidak valid. Harap masukkan angka 1-4.")
+            #menambahkan tugas
+            if pilihan == '1':
+                tugas_baru = input("Masukkan tugas yang ingin ditambahkan: ").strip()
+                if not tugas_baru:
+                    raise ValueError("Tugas tidak boleh kosong.")
+                tugas.append(tugas_baru)
+                print("Tugas berhasil ditambahkan!")
+            #menghapus tugas
+            elif pilihan == '2':
+                if not tugas:
+                    print("Daftar tugas kosong. Tidak ada yang bisa dihapus.")
+                    continue
+                try:
+                    indeks = int(input("Masukkan nomor tugas yang ingin dihapus: ")) - 1
+                    if indeks < 0 or indeks >= len(tugas):
+                        raise IndexError(f"Tugas dengan nomor {indeks + 1} tidak ditemukan.")
+                    tugas_terhapus = tugas.pop(indeks)
+                    print(f"Tugas '{tugas_terhapus}' berhasil dihapus.")
+                except ValueError:
+                    print("Error: Harap masukkan angka yang valid.")
+                except IndexError as e:
+                    print(f"Error: {e}")
+            
+            elif pilihan == '3':
+                if not tugas:
+                    print("Daftar tugas kosong.")
+                else:
+                    print("Daftar Tugas:")
+                    for i, t in enumerate(tugas, start=1):
+                        print(f"{i}. {t}")
+            
+            elif pilihan == '4':
+                print("Keluar dari program.")
+                break
+        
+        except ValueError as e:
+            print(f"Error: {e}")
+        
+#menjalankan fungsi utama
+if __name__ == "__main__":
+    main()
+a

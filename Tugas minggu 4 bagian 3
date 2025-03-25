@@ -1,0 +1,48 @@
+from abc import ABC, abstractmethod
+
+#Abstraksi: Kelas abstrak sebagai blueprint untuk semua hewan
+class Animal(ABC):
+    def __init__(self, nama, umur):
+        self.__nama = nama  #Enkapsulasi (atribut private)
+        self.__umur = umur  #Enkapsulasi (atribut private)
+    
+    @abstractmethod
+    def make_sound(self):
+        #Harus diimplementasikan di subclass
+        pass 
+    
+    def get_info(self):
+        return f"Nama: {self.__nama}, Umur: {self.__umur} tahun"
+    
+#Pewarisan: Subkelas mewarisi dari Animal
+class singa(Animal):
+    def make_sound(self):
+        return "Roar!"
+
+class kucing(Animal):
+    def make_sound(self):
+        return "Meonggg"
+
+class domba(Animal):
+    def make_sound(self):
+        return "Mbhekkk!"
+
+#Polimorfisme: Fungsi untuk mencetak suara dari hewan apapun
+def animal_sound(animal):
+    if not isinstance(animal, Animal):
+        raise TypeError("Objek harus merupakan instance dari kelas Animal.")
+    print(f"{animal.get_info()} -> Suara: {animal.make_sound()}")
+
+#Penanganan Kesalahan dan Pengujian
+try:
+    singa = singa("Simba", 10)
+    kucing = kucing("Cimi", 2)
+    domba = domba("jepri", 4)
+    
+    animal_sound(singa)
+    animal_sound(kucing)
+    animal_sound(domba)
+    
+#Pengujian input tidak valid
+except Exception as e:
+    print(f"Error: {e}")
