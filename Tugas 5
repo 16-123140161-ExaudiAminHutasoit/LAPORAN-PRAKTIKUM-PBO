@@ -1,0 +1,103 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+from datetime import datetime
+
+data_catatan = []
+
+def tampil_detail(event):
+    pilihan = daftar_catatan.curselection()
+    if pilihan:
+        idx = pilihan[0]
+        isi_text.config(state="normal")
+        isi_text.delete("1.0", tk.END)
+        isi_text.insert(tk.END, data_catatan[idx]["konten"])
+        isi_text.config(state="disabled")
+
+def simpan_catatan():
+    kepala = input_judul.get().strip()
+    badan = input_isi.get("1.0", tk.END).strip()
+
+    if not kepala or not badan:
+        messagebox.showwarning("Error", "Judul dan isi harus diisi.")
+        return
+
+    waktu = datetime.now().strftime("%d-%m-%Y %H:%M")
+    catat = {"judul": kepala, "konten": badan, "timestamp": waktu}
+    data_catatan.append(catat)
+    daftar_catatan.insert(tk.END, f"{kepala} ({waktu})")
+
+    input_judul.delete(0, tk.END)
+    input_isi.delete("1.0", tk.END)
+
+def hapus_item():
+    pilihan = daftar_catatan.curselection()
+    if not pilihan:
+        return
+
+    if messagebox.askyesno("Konfirmasi", "Hapus catatan ini?"):
+        idx = pilihan[0]
+        daftar_catatan.delete(idx)
+        del data_catatan[idx]
+        isi_text.config(state="normal")
+        isi_text.delete("1.0", tk.END)
+        isi_text.config(state="disabled")
+
+def tutup_aplikasi():
+    jendela.quit()
+
+def info_aplikasi():
+    messagebox.showinfo("Info", "Catatan Harian X\nVersi 1.1\nDengan Tkinter")
+
+jendela = tk.Tk()
+jendela.title("NoteKeeperX")
+
+menuutama = tk.Menu(jendela)
+menu_file = tk.Menu(menuutama, tearoff=0)
+menu_file.add_command(label="Keluar", command=tutup_aplikasi)
+menuutama.add_cascade(label="File", menu=menu_file)
+
+menu_bantuan = tk.Menu(menuutama, tearoff=0)
+menu_bantuan.add_command(label="Tentang", command=info_aplikasi)
+menuutama.add_cascade(label="Bantuan", menu=menu_bantuan)
+
+jendela.config(menu=menuutama)
+
+# Frame Input
+bagian_input = tk.Frame(jendela)
+bagian_input.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
+
+tk.Label(bagian_input, text="Judul Catatan:").grid(row=0, column=0, sticky="w")
+input_judul = tk.Entry(bagian_input, width=45)
+input_judul.grid(row=0, column=1, sticky="ew")
+
+input_isi = tk.Text(bagian_input, height=4)
+input_isi.grid(row=1, column=0, columnspan=2, pady=5)
+
+frame_btn = tk.Frame(bagian_input)
+frame_btn.grid(row=2, column=0, columnspan=2, pady=5)
+tk.Button(frame_btn, text="Simpan", command=simpan_catatan).pack(side="left", padx=5)
+tk.Button(frame_btn, text="Hapus", command=hapus_item).pack(side="left", padx=5)
+
+# Frame List Catatan
+bagian_list = tk.Frame(jendela)
+bagian_list.grid(row=1, column=0, padx=10, pady=10)
+
+tk.Label(bagian_list, text="Daftar Catatan").pack()
+daftar_catatan = tk.Listbox(bagian_list, width=38, height=10)
+daftar_catatan.pack(side="left")
+
+scroll = tk.Scrollbar(bagian_list, orient="vertical", command=daftar_catatan.yview)
+scroll.pack(side="right", fill="y")
+daftar_catatan.config(yscrollcommand=scroll.set)
+
+daftar_catatan.bind("<<ListboxSelect>>", tampil_detail)
+
+# Frame Isi Catatan
+bagian_isi = tk.Frame(jendela)
+bagian_isi.grid(row=1, column=1, padx=10, pady=10)
+tk.Label(bagian_isi, text="Isi Catatan").pack()
+
+isi_text = tk.Text(bagian_isi, width=40, height=10, state="disabled")
+isi_text.pack()
+
+jendela.mainloop()
